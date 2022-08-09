@@ -1,0 +1,36 @@
+name: Heroku + S3 sync
+description: Reset staging environment to production data (Heroku Postgres database + S3 bucket)
+inputs:
+  aws_access_key_id:
+    description: AWS access key id
+    required: true
+  aws_secret_access_key:
+    description: AWS secret access key
+    required: true
+  aws_region:
+    description: Default AWS region
+    default: eu-west-1
+  s3_bucket_staging:
+    description: Staging bucket
+    required: true
+  s3_bucket_production:
+    description: Production bucket
+    required: true
+  s3_purge:
+    description: Delete old files on S3 staging bucket
+    default: true
+  heroku_api_key:
+    description: Heroku API key
+    required: true
+  heroku_app_production:
+    description: Heroku application name (production environment)
+    required: true
+  heroku_app_staging:
+    description: Heroku application name (staging environment)
+    required: true
+  heroku_create_backup:
+    description: Create a new database backup (otherwise the latest will be used)
+    default: true
+runs:
+  using: docker
+  image: Dockerfile

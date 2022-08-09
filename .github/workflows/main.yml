@@ -1,0 +1,32 @@
+name: Test action on dummy app
+
+on:
+  workflow_dispatch:
+    inputs:
+      s3_purge:
+        description: Delete old files on S3 staging bucket
+        type: boolean
+        default: true
+      heroku_create_backup:
+        description: Create a new database backup (otherwise the latest will be used)
+        type: boolean
+        default: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run action
+        uses: ./
+        with:
+          heroku_app_production: jacob-test-sync-production
+          heroku_app_staging: jacob-test-sync-staging
+          heroku_create_backup: ${{ inputs.heroku_create_backup }}
+          s3_bucket_production: jacob-test-sync-production
+          s3_bucket_staging: jacob-test-sync-staging
+          s3_purge: ${{ inputs.s3_purge }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
