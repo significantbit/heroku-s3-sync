@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Support --delete flag
-if [ $INPUT_S3_PURGE = true ]; then
+if $INPUT_S3_PURGE; then
   DELETE_ARG="--delete"
 fi
 
@@ -47,7 +47,7 @@ text
 EOF
 
 printf "\n✅ S3 bucket syncronized"
-if [ $INPUT_S3_PURGE = true ]; then
+if $INPUT_S3_PURGE; then
   printf " + purged"
 fi
 printf "\n\n"
