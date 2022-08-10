@@ -12,4 +12,10 @@ RUN apk add --no-cache \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+COPY heroku.sh /heroku.sh
+RUN chmod +x /heroku.sh
+
+COPY s3.sh /s3.sh
+RUN chmod +x /s3.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
