@@ -32,6 +32,12 @@ fi
 # Sync using our dedicated profile and suppress verbose messages
 aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}
 
+if [ $? -ne 0 ]; then
+  printf "\n🚫  S3 syncronization failed.\n"
+  printf "    Have you setup IAM permissions to the specific bucket?\n\n"
+  exit 1
+fi
+
 # Clear out credentials after we're done
 aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
 null
