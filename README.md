@@ -4,7 +4,7 @@
 ## Example usage
 
 ```yaml
-uses: significantbit/heroku-s3-sync
+uses: significantbit/heroku-s3-sync@main
 with:
   # Always store credentials as repository/organization secrets
   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
