@@ -39,10 +39,12 @@ fi
 printf "✨ Restoring database backup to ${INPUT_HEROKU_APP_STAGING}...\n\n"
 export HEROKU_APP=${INPUT_HEROKU_APP_STAGING}
 heroku pg:backups:restore ${INPUT_HEROKU_APP_PRODUCTION}:: DATABASE_URL --confirm ${INPUT_HEROKU_APP_STAGING}
-printf "\n✅ Production database backup restored to ${INPUT_HEROKU_APP_STAGING}\n"
+printf "\n✅ Production database backup restored to ${INPUT_HEROKU_APP_STAGING}\n\n"
 
 if [ $INPUT_RAILS_MIGRATE_BLOBS = true ]; then
   # Update blobs to use staging bucket
+  echo $(which psql)
+  echo "Hmm..."
   heroku pg:psql -c "UPDATE active_storage_blobs SET service_name='staging' WHERE service_name='production';"
   printf "\n✅ Postgres: Updated service_name to staging on Active Storage blobs\n"
 fi
