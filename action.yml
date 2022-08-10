@@ -31,6 +31,9 @@ inputs:
   heroku_create_backup:
     description: Create a new database backup (otherwise the latest will be used)
     default: true
+  rails_migrate_blobs:
+    description: Migrate Active Storage blobs to staging S3 bucket
+    default: true
 runs:
   using: docker
   image: Dockerfile

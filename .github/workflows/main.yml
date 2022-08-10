@@ -23,10 +23,11 @@ jobs:
         with:
           heroku_app_production: jacob-test-sync-production
           heroku_app_staging: jacob-test-sync-staging
-          heroku_create_backup: ${{ inputs.heroku_create_backup }}
+          heroku_create_backup: ${{ github.event.inputs.heroku_create_backup }}
           s3_bucket_production: jacob-test-sync-production
           s3_bucket_staging: jacob-test-sync-staging
-          s3_purge: ${{ inputs.s3_purge }}
+          s3_purge: ${{ github.event.inputs.s3_purge }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          rails_migrate_data: true

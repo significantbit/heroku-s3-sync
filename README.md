@@ -20,6 +20,8 @@ with:
   s3_bucket_staging: my-site-staging
   # Purge old files from staging bucket (default: true)
   s3_purge: true
+  # Migrate Active Storage blobs to staging S3 bucket (default: true)
+  rails_migrate_blobs: true
 ```
 
 ### Repository secrets
@@ -30,4 +32,9 @@ HEROKU_API_KEY=
 # AWS IAM user credentials
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
+```
+
+## Development
+```sh
+$ act workflow_dispatch --rebuild -e payload.json
 ```

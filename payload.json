@@ -1,0 +1,6 @@
+{
+  "inputs": {
+    "heroku_create_backup": true,
+    "s3_purge": true
+  }
+}
