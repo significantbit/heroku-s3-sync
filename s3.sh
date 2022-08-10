@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Support --delete flag
-if [ -n "$INPUT_S3_PURGE" ]; then
+if [ $INPUT_S3_PURGE = true ]; then
   DELETE_ARG="--delete"
 fi
 

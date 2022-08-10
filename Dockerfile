@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-RUN apk add --no-cache bash curl gcompat sudo
+RUN apk add --no-cache bash curl gcompat sudo postgresql-client
 RUN apk add --no-cache \
         python3 \
         py3-pip \

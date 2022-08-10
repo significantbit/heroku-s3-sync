@@ -18,6 +18,7 @@ inputs:
     required: true
   s3_purge:
     description: Delete old files on S3 staging bucket
+    type: boolean
     default: true
   heroku_api_key:
     description: Heroku API key
@@ -30,9 +31,11 @@ inputs:
     required: true
   heroku_create_backup:
     description: Create a new database backup (otherwise the latest will be used)
+    type: boolean
     default: true
   rails_migrate_blobs:
     description: Migrate Active Storage blobs to staging S3 bucket
+    type: boolean
     default: true
 runs:
   using: docker

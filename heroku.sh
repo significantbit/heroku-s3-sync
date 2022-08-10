@@ -23,7 +23,7 @@ fi
 
 LAST_BACKUP_DATE="$(heroku pg:backups:info -a ${INPUT_HEROKU_APP_PRODUCTION} | grep -o -E -m 1 '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}')"
 
-if [ -n "$INPUT_HEROKU_CREATE_BACKUP" ] || [ -z "$LAST_BACKUP_DATE" ]; then
+if [ $INPUT_HEROKU_CREATE_BACKUP = true ] || [ -z "$LAST_BACKUP_DATE" ]; then
   printf "✨ Capturing new database backup on ${INPUT_HEROKU_APP_PRODUCTION}...\n\n"
 
   # Create production database backup
@@ -41,7 +41,7 @@ export HEROKU_APP=${INPUT_HEROKU_APP_STAGING}
 heroku pg:backups:restore ${INPUT_HEROKU_APP_PRODUCTION}:: DATABASE_URL --confirm ${INPUT_HEROKU_APP_STAGING}
 printf "\n✅ Production database backup restored to ${INPUT_HEROKU_APP_STAGING}\n"
 
-if [ -n "$INPUT_RAILS_MIGRATE_BLOBS" ]; then
+if [ $INPUT_RAILS_MIGRATE_BLOBS = true ]; then
   # Update blobs to use staging bucket
   heroku pg:psql -c "UPDATE active_storage_blobs SET service_name='staging' WHERE service_name='production';" 2> /dev/null
   printf "\n✅ Postgres: Updated service_name to staging on Active Storage blobs\n"
