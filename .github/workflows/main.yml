@@ -30,4 +30,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          rails_migrate_data: true
+          rails_migrate_blobs: true
