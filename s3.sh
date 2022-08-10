@@ -47,7 +47,7 @@ text
 EOF
 
 printf "\n✅ S3 bucket syncronized"
-if [ -n "$INPUT_S3_PURGE" ]; then
+if [ $INPUT_S3_PURGE = true ]; then
   printf " + purged"
 fi
 printf "\n\n"
