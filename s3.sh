@@ -1,5 +1,16 @@
 #!/bin/sh -l
 
+
+# Check if AWS CLI is installed
+if ! command -v aws &> /dev/null; then
+    echo "❌ AWS CLI is not installed. Please install it to proceed."
+    exit 1
+fi
+
+# Check AWS CLI version
+AWS_VERSION=$(aws --version 2>&1)
+echo "AWS CLI version: $AWS_VERSION"
+
 # Validate inputs
 if [ -z "$INPUT_AWS_ACCESS_KEY_ID" ] || [ -z "$INPUT_AWS_SECRET_ACCESS_KEY" ] || [ -z "$INPUT_S3_BUCKET_PRODUCTION" ] || [ -z "$INPUT_S3_BUCKET_STAGING" ]; then
   echo "\n❌ Skipping S3 bucket synchronization.\nAdd 's3_bucket_production' and 's3_bucket_staging' to your GitHub action to enable it.\n"
