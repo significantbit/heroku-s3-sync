@@ -1,35 +1,23 @@
-FROM node:18-buster
+# Use a base image with Python since AWS CLI requires Python
+FROM python:3.9-slim
 
-# Install system dependencies including Heroku CLI and AWS CLI
+# Install dependencies for AWS CLI and Heroku CLI
 RUN apt-get update && \
-    apt-get install -y \
-        bash \
-        curl \
-        sudo \
-        postgresql-client \
-        awscli && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y curl gnupg
 
-# Download and install Heroku CLI
-RUN curl -s https://cli-assets.heroku.com/install.sh | sh && \
-    echo "✅ Heroku CLI installed" || echo "❌ Heroku CLI installation failed"
+# Install AWS CLI
+RUN pip install --no-cache-dir awscli
 
-# Check and output AWS CLI installation details
-RUN aws --version && \
-    which aws && \
-    ls -l /usr/bin/aws && \
-    echo "✅ AWS CLI installation verified" || echo "❌ AWS CLI installation verification failed"
+# Install Heroku CLI
+RUN curl https://cli-assets.heroku.com/install.sh | sh
 
-# Clean up
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy the shell scripts into the container
+COPY heroku.sh /usr/local/bin/heroku.sh
+COPY s3.sh /usr/local/bin/s3.sh
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Make the scripts executable
+RUN chmod +x /usr/local/bin/heroku.sh /usr/local/bin/s3.sh
 
-COPY heroku.sh /heroku.sh
-RUN chmod +x /heroku.sh
+# Run the shell scripts
+CMD ["/bin/sh", "-c", "/usr/local/bin/heroku.sh && /usr/local/bin/s3.sh"]
 
-COPY s3.sh /s3.sh
-RUN chmod +x /s3.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
