@@ -1,21 +1,24 @@
-FROM node:18-alpine
+FROM node:18-buster
 
-# Install system dependencies
-RUN apk add --no-cache bash curl gcompat sudo postgresql-client python3 py3-pip
+# Install system dependencies including Heroku CLI and AWS CLI
+RUN apt-get update && \
+    apt-get install -y \
+        bash \
+        curl \
+        sudo \
+        postgresql-client \
+        awscli && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set up Python virtual environment and install packages
-RUN python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir --upgrade pip && \
-    /venv/bin/pip install --no-cache-dir awscli
-
-# Set the virtual environment path for subsequent commands
-ENV PATH="/venv/bin:$PATH"
+# Download and install Heroku CLI
+RUN curl -s https://cli-assets.heroku.com/install.sh | sh && \
+    echo "✅ Heroku CLI installed" || echo "❌ Heroku CLI installation failed"
 
 # Verify AWS CLI installation
 RUN aws --version
 
 # Clean up
-RUN rm -rf /var/cache/apk/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
