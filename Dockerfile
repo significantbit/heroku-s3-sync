@@ -1,14 +1,14 @@
 # Use a base image with Python since AWS CLI requires Python
 FROM python:3.9-slim
 
-# Install dependencies for AWS CLI and Heroku CLI
+# Install dependencies including unzip
 RUN apt-get update && \
-    apt-get install -y curl gnupg
+    apt-get install -y curl gnupg unzip
 
 # Install AWS CLI using the official installation script
 RUN curl "https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
-    sudo ./aws/install && \
+    ./aws/install && \
     aws --version
 
 # Install Heroku CLI
