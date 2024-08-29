@@ -1,13 +1,16 @@
 FROM node:18-alpine
 
+# Install system dependencies
 RUN apk add --no-cache bash curl gcompat sudo postgresql-client python3 py3-pip
 
-# Install AWS CLI
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir awscli
+# Set up Python virtual environment and install packages
+RUN python3 -m venv /venv && \
+    . /venv/bin/activate && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir awscli
 
-# Add AWS CLI to PATH
-ENV PATH="/usr/local/bin:${PATH}"
+# Set the virtual environment path for subsequent commands
+ENV PATH="/venv/bin:$PATH"
 
 # Verify installation
 RUN aws --version
