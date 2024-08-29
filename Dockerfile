@@ -1,13 +1,15 @@
 FROM node:18-alpine
 
-RUN apk add --no-cache bash curl gcompat sudo postgresql-client
-RUN apk add --no-cache \
-        python3 \
-        py3-pip \
-    && pip3 install --upgrade pip \
-    && pip3 install --no-cache-dir \
-        awscli \
-    && rm -rf /var/cache/apk/*
+RUN apk add --no-cache bash curl gcompat sudo postgresql-client python3 py3-pip
+
+# Create a virtual environment and install Python packages
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir awscli
+
+# Clean up
+RUN rm -rf /var/cache/apk/*
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
