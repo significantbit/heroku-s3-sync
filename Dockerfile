@@ -5,10 +5,10 @@ FROM python:3.9-slim
 RUN apt-get update && \
     apt-get install -y curl gnupg unzip
 
-# Install AWS CLI using the official installation script
-RUN curl "https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+# Download and install AWS CLI v2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
-    ./aws/install && \
+    sudo ./aws/install && \
     aws --version
 
 # Install Heroku CLI
