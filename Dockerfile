@@ -14,8 +14,11 @@ RUN apt-get update && \
 RUN curl -s https://cli-assets.heroku.com/install.sh | sh && \
     echo "✅ Heroku CLI installed" || echo "❌ Heroku CLI installation failed"
 
-# Verify AWS CLI installation
-RUN aws --version
+# Check and output AWS CLI installation details
+RUN aws --version && \
+    which aws && \
+    ls -l /usr/bin/aws && \
+    echo "✅ AWS CLI installation verified" || echo "❌ AWS CLI installation verification failed"
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
