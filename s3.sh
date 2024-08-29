@@ -1,10 +1,9 @@
 #!/bin/sh -l
 
-# Validate inuts
+# Validate inputs
 if [ -z "$INPUT_AWS_ACCESS_KEY_ID" ] || [ -z "$INPUT_AWS_SECRET_ACCESS_KEY" ] || [ -z "$INPUT_S3_BUCKET_PRODUCTION" ] || [ -z "$INPUT_S3_BUCKET_STAGING" ]; then
-  printf "\n❌ Skipping S3 bucket syncronization.\n"
-  printf "   Add 's3_bucket_production' and 's3_bucket_staging' to your Github action to enable it.\n\n"
-  return
+  echo "\n❌ Skipping S3 bucket synchronization.\nAdd 's3_bucket_production' and 's3_bucket_staging' to your GitHub action to enable it.\n"
+  exit 1
 fi
 
 # Create a dedicated profile for this action to avoid conflicts
@@ -16,25 +15,20 @@ text
 EOF
 
 # Verify authorization
-aws sts get-caller-identity --profile heroku-s3-sync > /dev/null
-
-if [ $? -ne 0 ]; then
-  printf "\n🚫  S3 syncronization failed.\n"
-  printf "    Unable to authorize using AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.\n\n"
+if ! aws sts get-caller-identity --profile heroku-s3-sync > /dev/null; then
+  echo "\n🚫  S3 synchronization failed.\nUnable to authorize using AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.\n"
   exit 1
 fi
 
 # Support --delete flag
-if $INPUT_S3_PURGE; then
+DELETE_ARG=""
+if [ "$INPUT_S3_PURGE" = "true" ]; then
   DELETE_ARG="--delete"
 fi
 
 # Sync using our dedicated profile and suppress verbose messages
-aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}
-
-if [ $? -ne 0 ]; then
-  printf "\n🚫  S3 syncronization failed.\n"
-  printf "    Have you setup IAM permissions to the specific bucket?\n\n"
+if ! aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}; then
+  echo "\n🚫  S3 synchronization failed.\nHave you set up IAM permissions to the specific bucket?\n"
   exit 1
 fi
 
@@ -46,8 +40,8 @@ null
 text
 EOF
 
-printf "\n✅ S3 bucket syncronized"
-if $INPUT_S3_PURGE; then
-  printf " + purged"
+echo "\n✅ S3 bucket synchronized"
+if [ "$INPUT_S3_PURGE" = "true" ]; then
+  echo " + purged"
 fi
-printf "\n\n"
+echo "\n"
