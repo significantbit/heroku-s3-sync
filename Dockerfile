@@ -5,14 +5,13 @@ RUN apk add --no-cache bash curl gcompat sudo postgresql-client python3 py3-pip
 
 # Set up Python virtual environment and install packages
 RUN python3 -m venv /venv && \
-    . /venv/bin/activate && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir awscli
+    /venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /venv/bin/pip install --no-cache-dir awscli
 
 # Set the virtual environment path for subsequent commands
 ENV PATH="/venv/bin:$PATH"
 
-# Verify installation
+# Verify AWS CLI installation
 RUN aws --version
 
 # Clean up
