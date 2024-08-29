@@ -8,6 +8,9 @@ ENV PATH="/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --no-cache-dir awscli
 
+# Verify installation
+RUN aws --version
+
 # Clean up
 RUN rm -rf /var/cache/apk/*
 
