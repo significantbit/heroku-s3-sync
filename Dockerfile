@@ -25,11 +25,11 @@ RUN curl https://cli-assets.heroku.com/install.sh | sh
 WORKDIR /app
 
 # Copy your scripts
-COPY heroku_sync.sh /app/heroku_sync.sh
-COPY s3_sync.sh /app/s3_sync.sh
+COPY heroku.sh /app/heroku.sh
+COPY s3.sh /app/s3.sh
 
 # Make scripts executable
-RUN chmod +x /app/heroku_sync.sh /app/s3_sync.sh
+RUN chmod +x /app/heroku.sh /app/s3.sh
 
 # Set entrypoint
-ENTRYPOINT ["/bin/bash"]
+CMD ["/bin/bash", "-c", "./heroku.sh && ./s3.sh"]
