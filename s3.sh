@@ -1,14 +1,15 @@
 #!/bin/sh -l
 
+echo "PATH: $PATH"
 
 # Check if AWS CLI is installed
-if ! command -v aws &> /dev/null; then
-    echo "❌ AWS CLI is not installed. Please install it to proceed."
+if ! /usr/local/bin/aws --version &> /dev/null; then
+    echo "❌ AWS CLI is not installed or not functioning properly."
     exit 1
 fi
 
 # Check AWS CLI version
-AWS_VERSION=$(aws --version 2>&1)
+AWS_VERSION=$(/usr/local/bin/aws --version 2>&1)
 echo "AWS CLI version: $AWS_VERSION"
 
 # Validate inputs
@@ -18,7 +19,7 @@ if [ -z "$INPUT_AWS_ACCESS_KEY_ID" ] || [ -z "$INPUT_AWS_SECRET_ACCESS_KEY" ] ||
 fi
 
 # Create a dedicated profile for this action to avoid conflicts
-aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
+/usr/local/bin/aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
 ${INPUT_AWS_ACCESS_KEY_ID}
 ${INPUT_AWS_SECRET_ACCESS_KEY}
 ${INPUT_AWS_REGION}
@@ -26,7 +27,7 @@ text
 EOF
 
 # Verify authorization
-if ! aws sts get-caller-identity --profile heroku-s3-sync > /dev/null; then
+if ! /usr/local/bin/aws sts get-caller-identity --profile heroku-s3-sync > /dev/null; then
   echo "\n🚫  S3 synchronization failed.\nUnable to authorize using AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.\n"
   exit 1
 fi
@@ -38,13 +39,13 @@ if [ "$INPUT_S3_PURGE" = "true" ]; then
 fi
 
 # Sync using our dedicated profile and suppress verbose messages
-if ! aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}; then
+if ! /usr/local/bin/aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}; then
   echo "\n🚫  S3 synchronization failed.\nHave you set up IAM permissions to the specific bucket?\n"
   exit 1
 fi
 
 # Clear out credentials after we're done
-aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
+/usr/local/bin/aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
 null
 null
 null
