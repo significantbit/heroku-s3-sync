@@ -21,15 +21,13 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 # Install Heroku CLI
 RUN curl https://cli-assets.heroku.com/install.sh | sh
 
-# Set up working directory
-WORKDIR /app
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Copy your scripts
-COPY heroku.sh /app/heroku.sh
-COPY s3.sh /app/s3.sh
+COPY heroku.sh /heroku.sh
+RUN chmod +x /heroku.sh
 
-# Make scripts executable
-RUN chmod +x /app/heroku.sh /app/s3.sh
+COPY s3.sh /s3.sh
+RUN chmod +x /s3.sh
 
-# Set entrypoint
-CMD ["/bin/bash", "-c", "./heroku.sh && ./s3.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
