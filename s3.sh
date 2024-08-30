@@ -1,25 +1,7 @@
 #!/bin/sh -l
 
-echo "PATH: $PATH"
-
-echo "Checking AWS CLI installation..."
-ls -l /usr/local/bin/aws
-file /usr/local/bin/aws
-/usr/local/bin/aws --version
-
-echo "Checking AWS CLI permissions..."
-whoami
-groups
-
-echo "Checking if AWS CLI is executable..."
-if [ -x "$(command -v aws)" ]; then
-    echo "AWS CLI is executable"
-else
-    echo "AWS CLI is not executable"
-fi
-
 # Check if AWS CLI is installed
-if ! aws --version &> /dev/null; then
+if ! aws --version 2>&1; then
     echo "❌ AWS CLI is not installed or not functioning properly."
     exit 1
 fi
