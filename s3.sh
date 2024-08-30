@@ -38,8 +38,6 @@ fi
 
 aws s3 sync s3://${INPUT_S3_BUCKET_PRODUCTION} s3://${INPUT_S3_BUCKET_STAGING} --profile heroku-s3-sync ${DELETE_ARG}
 
-echo "✅ S3 synchronization done."
-
 # Clear out credentials after we're done
 aws configure --profile heroku-s3-sync <<-EOF > /dev/null 2>&1
 null
