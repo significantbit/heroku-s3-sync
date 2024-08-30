@@ -1,34 +1,35 @@
-# Use a base image with Python since AWS CLI requires Python
-FROM python:3.9-slim
+# Use Ubuntu as the base image
+FROM ubuntu:20.04
 
-# Install dependencies including unzip and the requested packages
-RUN apt-get update && \
-    apt-get install -y curl gnupg unzip bash sudo postgresql-client && \
-    # gcompat is not available in Debian-based systems, so we'll skip it
-    # Install Node.js and npm
-    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get install -y nodejs && \
-    # Clean up
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Avoid prompts from apt
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Download and install AWS CLI v2
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    aws --version && \
-    rm -rf aws awscliv2.zip
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    python3-pip \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf aws awscliv2.zip
 
 # Install Heroku CLI
-RUN curl https://cli-assets.heroku.com/install.sh | sh && \
-    heroku --version
+RUN curl https://cli-assets.heroku.com/install.sh | sh
 
-# Copy the shell scripts into the container
-COPY heroku.sh /usr/local/bin/heroku.sh
-COPY s3.sh /usr/local/bin/s3.sh
+# Set up working directory
+WORKDIR /app
 
-# Make the scripts executable
-RUN chmod +x /usr/local/bin/heroku.sh /usr/local/bin/s3.sh
+# Copy your scripts
+COPY heroku_sync.sh /app/heroku_sync.sh
+COPY s3_sync.sh /app/s3_sync.sh
 
-# Run the shell scripts
-CMD ["/bin/bash", "-c", "/usr/local/bin/heroku.sh && /usr/local/bin/s3.sh"]
+# Make scripts executable
+RUN chmod +x /app/heroku_sync.sh /app/s3_sync.sh
+
+# Set entrypoint
+ENTRYPOINT ["/bin/bash"]
